@@ -9,7 +9,7 @@ document.getElementById("productForm").addEventListener("submit", function(event
         product,
         quantity,
         color,
-        responses: [] // Aluksi ei ole vastauksia
+        responses: [] // Ei vastauksia aluksi
     };
 
     let requests = JSON.parse(localStorage.getItem("requests")) || [];
@@ -17,8 +17,8 @@ document.getElementById("productForm").addEventListener("submit", function(event
     localStorage.setItem("requests", JSON.stringify(requests));
 
     displayRequests(); // Näytä toiveet
-    updateProductSelect(); // Päivitä pudotusvalikko
-    document.getElementById("productForm").reset();
+    updateProductSelect(); // Päivitä pudotusvalikko varastokäyttäjälle
+    document.getElementById("productForm").reset(); // Nollaa lomake
 });
 
 document.getElementById("responseForm").addEventListener("submit", function(event) {
@@ -39,20 +39,21 @@ document.getElementById("responseForm").addEventListener("submit", function(even
     let productRequest = requests.find(request => request.product === productSelect);
 
     if (productRequest) {
-        productRequest.responses.push(response); // Lisää vastaus oikeaan toiveeseen
+        productRequest.responses.push(response); // Lisää varastovastaus
         localStorage.setItem("requests", JSON.stringify(requests)); // Tallenna muutokset
-        displayRequests(); // Näytä toiveet
-        displayResponses(productRequest); // Näytä varastokäyttäjän vastaukset
+        displayRequests(); // Näytä toiveet uudelleen
+        displayResponses(productRequest); // Näytä vastaukset oikeassa kohdassa
     }
 
-    document.getElementById("responseForm").reset();
+    document.getElementById("responseForm").reset(); // Nollaa lomake
 });
 
-// Näytä kaikki toiveet ja niiden vastaukset
+// Näytä toiveet ja niiden vastaukset
 function displayRequests() {
     const requests = JSON.parse(localStorage.getItem("requests")) || [];
     const requestsDiv = document.getElementById("requests");
-    requestsDiv.innerHTML = "";
+    requestsDiv.innerHTML = ""; // Tyhjennetään aiemmat toiveet
+
     requests.forEach(request => {
         const requestDiv = document.createElement("div");
         requestDiv.innerHTML = `
@@ -73,15 +74,14 @@ function displayRequests() {
     });
 }
 
-// Päivitä pudotusvalikko varastokäyttäjälle
+// Päivitä pudotusvalikko
 function updateProductSelect() {
     const productSelect = document.getElementById("productSelect");
     const requests = JSON.parse(localStorage.getItem("requests")) || [];
 
-    // Tyhjennä pudotusvalikko ennen uusien toiveiden lisäämistä
+    // Tyhjennetään valikko
     productSelect.innerHTML = "";
 
-    // Lisää kaikki toiveet valikkoon
     requests.forEach(request => {
         const option = document.createElement("option");
         option.value = request.product;
@@ -90,11 +90,23 @@ function updateProductSelect() {
     });
 }
 
+// Näytä varastokäyttäjän vastaukset
 function displayResponses(productRequest) {
     const responsesDiv = document.getElementById(`responses${productRequest.product}`);
-    responsesDiv.innerHTML = "";
+    responsesDiv.innerHTML = ""; // Tyhjennetään aiemmat vastaukset
     productRequest.responses.forEach(response => {
         const responseDiv = document.createElement("div");
         responseDiv.innerHTML = `
             <p>Saatavilla: ${response.availability}</p>
-            <p>Hi
+            <p>Hinta: €${response.price}</p>
+            <p>Toimitusaika: ${response.deliveryTime}</p>
+            <hr>
+        `;
+        responsesDiv.appendChild(responseDiv);
+    });
+}
+
+window.onload = function() {
+    displayRequests();
+    updateProductSelect(); // Varmistetaan, että pudotusvalikko on oikein ladattu
+};
