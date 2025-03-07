@@ -4,48 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tuotetoiveet</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Tuotetoivejärjestelmä</h1>
+    <h1>Tuotetoiveet</h1>
 
-    <!-- Välilehdet -->
-    <div class="tabs">
-        <button onclick="avaaVälilehti('toiveet')">Tuotetoiveet</button>
-        <button onclick="avaaVälilehti('tilatut')">Tilatut tuotteet</button>
-        <button onclick="avaaVälilehti('saapuneet')">Saapuneet tuotteet</button>
-    </div>
+    <h2>Tehdäksesi tuotetoiveen, täytä alla oleva lomake</h2>
 
-    <!-- Tuotetoiveiden lisäys -->
-    <div id="toiveet" class="tab-content">
-        <h2>Lisää tuotetoive</h2>
-        <form id="toiveForm">
-            <label for="tuoteNimi">Tuotteen nimi:</label>
-            <input type="text" id="tuoteNimi" required>
-            
-            <label for="kuvaus">Kuvaus:</label>
-            <textarea id="kuvaus" required></textarea>
+    <form id="productForm">
+        <label for="product">Tuote:</label>
+        <input type="text" id="product" name="product" required><br>
 
-            <button type="submit">Lähetä toive</button>
-        </form>
+        <label for="quantity">Määrä:</label>
+        <input type="number" id="quantity" name="quantity" required><br>
 
-        <h2>Kaikki tuotetoiveet</h2>
-        <ul id="toiveList"></ul>
-    </div>
+        <label for="color">Väri:</label>
+        <input type="text" id="color" name="color"><br>
 
-    <!-- Tilatut tuotteet -->
-    <div id="tilatut" class="tab-content" style="display:none;">
-        <h2>Tilatut tuotteet</h2>
-        <ul id="tilatutList"></ul>
-    </div>
+        <button type="submit">Lähetä Toive</button>
+    </form>
 
-    <!-- Saapuneet tuotteet -->
-    <div id="saapuneet" class="tab-content" style="display:none;">
-        <h2>Saapuneet tuotteet</h2>
-        <ul id="saapuneetList"></ul>
-    </div>
+    <h2>Varastokäyttäjän Vastaukset</h2>
 
-    <script src="app.js"></script>
+    <form id="responseForm">
+        <label for="availability">Saatavilla:</label>
+        <select id="availability" name="availability">
+            <option value="Saatavilla">Saatavilla</option>
+            <option value="Ei saatavilla">Ei saatavilla</option>
+        </select><br>
+
+        <label for="price">Hinta (€):</label>
+        <input type="number" id="price" name="price" required><br>
+
+        <label for="deliveryTime">Toimitusaika:</label>
+        <input type="text" id="deliveryTime" name="deliveryTime"><br>
+
+        <button type="submit">Vastaa</button>
+    </form>
+
+    <h2>Toiveet</h2>
+    <div id="requests"></div>
+
+    <script src="script.js"></script>
 </body>
 </html>
-"test"
