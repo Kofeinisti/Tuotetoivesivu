@@ -23,24 +23,32 @@
         <button type="submit">Lähetä Toive</button>
     </form>
 
-<h2>Varastokäyttäjän Vastaukset</h2>
-<form id="responseForm">
-    <label for="productSelect">Valitse toive:</label>
-    <select id="productSelect" name="productSelect">
-        <!-- Tässä on dynaaminen lista toiveista, joita varastokäyttäjä voi vastata -->
-    </select><br>
+    <h2>Varastokäyttäjän Vastaukset</h2>
 
-    <label for="availability">Saatavilla:</label>
-    <select id="availability" name="availability">
-        <option value="Saatavilla">Saatavilla</option>
-        <option value="Ei saatavilla">Ei saatavilla</option>
-    </select><br>
+    <form id="responseForm">
+        <label for="productSelect">Valitse Tuote:</label>
+        <select id="productSelect" name="productSelect">
+            <!-- Tähän lisätään toiveet dynaamisesti -->
+        </select><br>
 
-    <label for="price">Hinta (€):</label>
-    <input type="number" id="price" name="price" required><br>
+        <label for="availability">Saatavilla:</label>
+        <select id="availability" name="availability">
+            <option value="Saatavilla">Saatavilla</option>
+            <option value="Ei saatavilla">Ei saatavilla</option>
+        </select><br>
 
-    <label for="deliveryTime">Toimitusaika:</label>
-    <input type="text" id="deliveryTime" name="deliveryTime"><br>
+        <label for="price">Hinta (€):</label>
+        <input type="number" id="price" name="price" required><br>
 
-    <button type="submit">Vastaa</button>
-</form>
+        <label for="deliveryTime">Toimitusaika:</label>
+        <input type="text" id="deliveryTime" name="deliveryTime"><br>
+
+        <button type="submit">Vastaa</button>
+    </form>
+
+    <h2>Toiveet</h2>
+    <div id="requests"></div>
+
+    <script src="javascript"></script>
+</body>
+</html>
