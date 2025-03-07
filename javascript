@@ -43,6 +43,7 @@ function displayRequests() {
             </td>
             <td><input type="number" value="${request.price}" onchange="updateResponse(${index}, 'price', this.value)"></td>
             <td><input type="text" value="${request.deliveryTime}" onchange="updateResponse(${index}, 'deliveryTime', this.value)"></td>
+            <td><button onclick="moveToResponses(${index})">Lähetä Varastolle</button></td>
             <td><button onclick="deleteRequest(${index})">Poista</button></td>
         `;
         
@@ -65,7 +66,7 @@ function deleteRequest(index) {
     displayRequests(); // Päivitä taulukko
 }
 
-// Siirrä vastaukset varastovastauksille
+// Siirrä vastaukset varastovastaus-taulukkoon
 function moveToResponses(index) {
     let requests = JSON.parse(localStorage.getItem("requests")) || [];
     const request = requests[index];
@@ -102,6 +103,7 @@ function displayResponses() {
             <td>${response.deliveryTime}</td>
             <td><button onclick="setOrderStatus(${index}, 'tilattu')">Tilattu</button></td>
             <td><button onclick="setOrderStatus(${index}, 'saapunut')">Saapunut</button></td>
+            <td><button onclick="deleteResponse(${index})">Poista</button></td>
         `;
         
         responsesBody.appendChild(row);
@@ -114,6 +116,14 @@ function setOrderStatus(index, status) {
     responses[index].status = status;
     localStorage.setItem("responses", JSON.stringify(responses));
     displayResponses(); // Päivitä varastovastaukset
+}
+
+// Poista varastovastaus
+function deleteResponse(index) {
+    let responses = JSON.parse(localStorage.getItem("responses")) || [];
+    responses.splice(index, 1);
+    localStorage.setItem("responses", JSON.stringify(responses));
+    displayResponses(); // Päivitä taulukko
 }
 
 window.onload = function() {
