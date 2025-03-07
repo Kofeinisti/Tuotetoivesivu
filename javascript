@@ -1,4 +1,3 @@
-// Tuotetoiveiden ja varastovastausten hallinta
 document.getElementById("productForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -17,7 +16,8 @@ document.getElementById("productForm").addEventListener("submit", function(event
     requests.push(productRequest);
     localStorage.setItem("requests", JSON.stringify(requests));
 
-    displayRequests();
+    displayRequests(); // Näytä toiveet
+    updateProductSelect(); // Päivitä pudotusvalikko
     document.getElementById("productForm").reset();
 });
 
@@ -41,8 +41,8 @@ document.getElementById("responseForm").addEventListener("submit", function(even
     if (productRequest) {
         productRequest.responses.push(response); // Lisää vastaus oikeaan toiveeseen
         localStorage.setItem("requests", JSON.stringify(requests)); // Tallenna muutokset
-        displayRequests();
-        displayResponses(productRequest); // Näytä päivitykset
+        displayRequests(); // Näytä toiveet
+        displayResponses(productRequest); // Näytä varastokäyttäjän vastaukset
     }
 
     document.getElementById("responseForm").reset();
@@ -70,9 +70,19 @@ function displayRequests() {
             <hr>
         `;
         requestsDiv.appendChild(requestDiv);
+    });
+}
 
-        // Täytä valinta varastokäyttäjälle
-        const productSelect = document.getElementById("productSelect");
+// Päivitä pudotusvalikko varastokäyttäjälle
+function updateProductSelect() {
+    const productSelect = document.getElementById("productSelect");
+    const requests = JSON.parse(localStorage.getItem("requests")) || [];
+
+    // Tyhjennä pudotusvalikko ennen uusien toiveiden lisäämistä
+    productSelect.innerHTML = "";
+
+    // Lisää kaikki toiveet valikkoon
+    requests.forEach(request => {
         const option = document.createElement("option");
         option.value = request.product;
         option.textContent = request.product;
@@ -87,15 +97,4 @@ function displayResponses(productRequest) {
         const responseDiv = document.createElement("div");
         responseDiv.innerHTML = `
             <p>Saatavilla: ${response.availability}</p>
-            <p>Hinta: €${response.price}</p>
-            <p>Toimitusaika: ${response.deliveryTime}</p>
-            <hr>
-        `;
-        responsesDiv.appendChild(responseDiv);
-    });
-}
-
-// Lataa tiedot, kun sivu latautuu
-window.onload = function() {
-    displayRequests();
-};
+            <p>Hi
