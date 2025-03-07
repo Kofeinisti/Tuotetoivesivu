@@ -70,16 +70,19 @@ function deleteRequest(index) {
 function moveToResponses(index) {
     let requests = JSON.parse(localStorage.getItem("requests")) || [];
     const request = requests[index];
+
+    // Tarkistetaan, että kaikki kentät ovat täytettyjä ennen siirtoa
     if (request.availability && request.price && request.deliveryTime) {
         const responses = JSON.parse(localStorage.getItem("responses")) || [];
         responses.push(request);
         localStorage.setItem("responses", JSON.stringify(responses));
 
+        // Poistetaan toive alkuperäisestä listasta
         requests.splice(index, 1);
         localStorage.setItem("requests", JSON.stringify(requests));
 
-        displayRequests(); // Päivitä tuotetoiveet
-        displayResponses(); // Päivitä varastovastaukset
+        displayRequests(); // Päivitä tuotetoiveet taulukko
+        displayResponses(); // Päivitä varastovastaukset taulukko
     } else {
         alert("Täytä kaikki kentät ennen siirtämistä.");
     }
