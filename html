@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuotetoiveet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Lisää tuotetoiveesi</h1>
+    <form id="toiveForm">
+        <label for="tuoteNimi">Tuotteen nimi:</label>
+        <input type="text" id="tuoteNimi" required>
+        
+        <label for="kuvaus">Kuvaus:</label>
+        <textarea id="kuvaus" required></textarea>
+
+        <button type="submit">Lähetä toive</button>
+    </form>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+<h2>Päävaraston hallinta</h2>
+<ul id="toiveList"></ul>
+
+<script>
+    fetch('toiveet.json')
+        .then(response => response.json())
+        .then(data => {
+            const list = document.getElementById('toiveList');
+            data.forEach(toive => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${toive.tuoteNimi} - ${toive.tila} 
+                                      <button onclick="muutaTila('${toive.tuoteNimi}')">Muuta tila</button>`;
+                list.appendChild(listItem);
+            });
+        });
+
+    function muutaTila(tuoteNimi) {
+        // Muuta tilan logiikka
+        alert(`Muuta tilaa tuotetoiveelle: ${tuoteNimi}`);
+    }
+</script>
