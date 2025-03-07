@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tuotetoiveet</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Tuotetoiveet</h1>
+    <h1>Tuotetoiveet ja Varaston Vastaus</h1>
 
-    <h2>Tehdäksesi tuotetoiveen, täytä alla oleva lomake</h2>
-
+    <h2>Toivomuslomake</h2>
     <form id="productForm">
         <label for="product">Tuote:</label>
         <input type="text" id="product" name="product" required><br>
@@ -23,47 +28,19 @@
         <button type="submit">Lähetä Toive</button>
     </form>
 
-    <h2>Tuotetoiveet ja Varastovastaukset</h2>
-
-    <!-- Tuotetoiveet Taulukko -->
-    <h3>Tuotetoiveet</h3>
+    <h2>Toiveet ja Varaston Vastaus</h2>
     <table id="requestsTable">
         <thead>
             <tr>
                 <th>Tuote</th>
                 <th>Määrä</th>
                 <th>Väri</th>
-                <th>Saatavilla</th>
-                <th>Hinta (€)</th>
-                <th>Toimitusaika</th>
-                <th>Lähetä Varastolle</th>
-                <th>Poista</th>
+                <th>Varaston Status</th>
+                <th>Viesti</th>
+                <th>Vastaa</th>
             </tr>
         </thead>
-        <tbody id="requestsBody">
-            <!-- Täytetään toiveet täällä -->
-        </tbody>
-    </table>
-
-    <!-- Varastovastaukset Taulukko -->
-    <h3>Varastovastaukset</h3>
-    <table id="responsesTable">
-        <thead>
-            <tr>
-                <th>Tuote</th>
-                <th>Määrä</th>
-                <th>Väri</th>
-                <th>Saatavilla</th>
-                <th>Hinta (€)</th>
-                <th>Toimitusaika</th>
-                
-                <th>Status</th>
-                <th>Poista</th>
-            </tr>
-        </thead>
-        <tbody id="responsesBody">
-            <!-- Täytetään varastovastaukset täällä -->
-        </tbody>
+        <tbody id="requestsBody"></tbody>
     </table>
 
     <script src="javascript"></script>

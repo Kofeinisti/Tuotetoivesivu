@@ -1,4 +1,3 @@
-// Lisää tuotetoiveen käsittely
 document.getElementById("productForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -9,7 +8,9 @@ document.getElementById("productForm").addEventListener("submit", function(event
     const productRequest = {
         product,
         quantity,
-        color
+        color,
+        status: "Odottaa vastausta", // Status alkutilassa
+        message: "" // Varaston vastaukset lisätään tähän
     };
 
     let requests = JSON.parse(localStorage.getItem("requests")) || [];
@@ -20,97 +21,44 @@ document.getElementById("productForm").addEventListener("submit", function(event
     document.getElementById("productForm").reset();
 });
 
-// Lisää varastovastauksen käsittely
-document.getElementById("responseForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const availability = document.getElementById("availability").value;
-    const price = document.getElementById("price").value;
-    const deliveryTime = document.getElementById("deliveryTime").value;
-
-    const response = {
-        availability,
-        price,
-        deliveryTime,
-        status: "", // Lisää tilan tieto (Tilattu/Saapunut)
-        product: document.getElementById("product").value,
-        quantity: document.getElementById("quantity").value,
-        color: document.getElementById("color").value
-    };
-
-    let responses = JSON.parse(localStorage.getItem("responses")) || [];
-    responses.push(response);
-    localStorage.setItem("responses", JSON.stringify(responses));
-
-    displayResponses();
-    document.getElementById("responseForm").reset();
-});
-
-// Näytä tuotetoiveet
 function displayRequests() {
     const requests = JSON.parse(localStorage.getItem("requests")) || [];
-    const requestsDiv = document.getElementById("requests");
-    requestsDiv.innerHTML = "";
-    requests.forEach(request => {
-        const requestDiv = document.createElement("div");
-        requestDiv.innerHTML = `
-            <p>Tuote: ${request.product}</p>
-            <p>Määrä: ${request.quantity}</p>
-            <p>Väri: ${request.color}</p>
-            <hr>
-        `;
-        requestsDiv.appendChild(requestDiv);
-    });
-}
+    const requestsBody = document.getElementById("requestsBody");
+    requestsBody.innerHTML = ""; // Tyhjennetään taulukko
 
-// Näytä varastovastaukset
-function displayResponses() {
-    const responses = JSON.parse(localStorage.getItem("responses")) || [];
-    const responsesBody = document.getElementById("responsesBody");
-    responsesBody.innerHTML = ""; // Tyhjennetään taulukko
-
-    responses.forEach((response, index) => {
+    requests.forEach((request, index) => {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${response.product}</td>
-            <td>${response.quantity}</td>
-            <td>${response.color}</td>
-            <td>${response.availability}</td>
-            <td>${response.price}</td>
-            <td>${response.deliveryTime}</td>
-            <td>
-                <label>
-                    <input type="radio" name="status${index}" value="Tilattu" ${response.status === "Tilattu" ? "checked" : ""} onclick="setOrderStatus(${index}, 'Tilattu')"> Tilattu
-                </label>
-                <label>
-                    <input type="radio" name="status${index}" value="Saapunut" ${response.status === "Saapunut" ? "checked" : ""} onclick="setOrderStatus(${index}, 'Saapunut')"> Saapunut
-                </label>
-            </td>
-            <td><button onclick="deleteResponse(${index})">Poista</button></td>
+            <td>${request.product}</td>
+            <td>${request.quantity}</td>
+            <td>${request.color}</td>
+            <td>${request.status}</td>
+            <td>${request.message || "Ei viestejä"}</td>
+            <td><button onclick="respondToRequest(${index})">Vastaa</button></td>
         `;
         
-        responsesBody.appendChild(row);
+        requestsBody.appendChild(row);
     });
 }
 
-// Päivitä varastovastauksen tila (Tilattu/Saapunut)
-function setOrderStatus(index, status) {
-    let responses = JSON.parse(localStorage.getItem("responses")) || [];
-    responses[index].status = status;
-    localStorage.setItem("responses", JSON.stringify(responses));
-    displayResponses(); // Päivitä varastovastaukset
-}
+function respondToRequest(index) {
+    let requests = JSON.parse(localStorage.getItem("requests")) || [];
+    const request = requests[index];
 
-// Poista varastovastaus
-function deleteResponse(index) {
-    let responses = JSON.parse(localStorage.getItem("responses")) || [];
-    responses.splice(index, 1);
-    localStorage.setItem("responses", JSON.stringify(responses));
-    displayResponses(); // Päivitä taulukko
+    // Lisätään viesti ja päivitetään status
+    const message = prompt("Lisää viesti varastolle:");
+    const status = prompt("Päivitä status (Tilattu / Saapunut / Peruttu):");
+
+    request.message = message || request.message;
+    request.status = status || request.status;
+
+    requests[index] = request;
+    localStorage.setItem("requests", JSON.stringify(requests));
+
+    displayRequests(); // Päivitetään taulukko
 }
 
 window.onload = function() {
     displayRequests();
-    displayResponses();
 };
