@@ -9,104 +9,69 @@ document.getElementById("productForm").addEventListener("submit", function(event
         product,
         quantity,
         color,
-        responses: [] // Ei vastauksia aluksi
+        availability: "",  // Varastovastaus
+        price: "",         // Varastovastaus
+        deliveryTime: "",  // Varastovastaus
     };
 
     let requests = JSON.parse(localStorage.getItem("requests")) || [];
     requests.push(productRequest);
     localStorage.setItem("requests", JSON.stringify(requests));
 
-    displayRequests(); // Näytä toiveet
-    updateProductSelect(); // Päivitä pudotusvalikko varastokäyttäjälle
+    displayRequests();
     document.getElementById("productForm").reset(); // Nollaa lomake
 });
 
-document.getElementById("responseForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const productSelect = document.getElementById("productSelect").value;
-    const availability = document.getElementById("availability").value;
-    const price = document.getElementById("price").value;
-    const deliveryTime = document.getElementById("deliveryTime").value;
-
-    const response = {
-        availability,
-        price,
-        deliveryTime
-    };
-
-    let requests = JSON.parse(localStorage.getItem("requests")) || [];
-    let productRequest = requests.find(request => request.product === productSelect);
-
-    if (productRequest) {
-        productRequest.responses.push(response); // Lisää varastovastaus
-        localStorage.setItem("requests", JSON.stringify(requests)); // Tallenna muutokset
-        displayRequests(); // Näytä toiveet uudelleen
-        displayResponses(productRequest); // Näytä vastaukset oikeassa kohdassa
-    }
-
-    document.getElementById("responseForm").reset(); // Nollaa lomake
-});
-
-// Näytä toiveet ja niiden vastaukset
+// Näytä toiveet ja vastaukset taulukossa
 function displayRequests() {
     const requests = JSON.parse(localStorage.getItem("requests")) || [];
-    const requestsDiv = document.getElementById("requests");
-    requestsDiv.innerHTML = ""; // Tyhjennetään aiemmat toiveet
+    const requestsBody = document.getElementById("requestsBody");
+    requestsBody.innerHTML = ""; // Tyhjennetään taulukko
 
-    requests.forEach(request => {
-        const requestDiv = document.createElement("div");
-        requestDiv.innerHTML = `
-            <p>Tuote: ${request.product}</p>
-            <p>Määrä: ${request.quantity}</p>
-            <p>Väri: ${request.color}</p>
-            <h3>Varastovastaukset:</h3>
-            <div id="responses${request.product}">
-                ${request.responses.map(response => `
-                    <p>Saatavilla: ${response.availability}</p>
-                    <p>Hinta: €${response.price}</p>
-                    <p>Toimitusaika: ${response.deliveryTime}</p>
-                `).join('')}
-            </div>
-            <hr>
+    requests.forEach((request, index) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${request.product}</td>
+            <td>${request.quantity}</td>
+            <td>${request.color}</td>
+            <td>
+                <select onchange="updateResponse(${index}, 'availability', this.value)">
+                    <option value="Saatavilla" ${request.availability === "Saatavilla" ? "selected" : ""}>Saatavilla</option>
+                    <option value="Ei saatavilla" ${request.availability === "Ei saatavilla" ? "selected" : ""}>Ei saatavilla</option>
+                </select>
+            </td>
+            <td><input type="number" value="${request.price}" onchange="updateResponse(${index}, 'price', this.value)"></td>
+            <td><input type="text" value="${request.deliveryTime}" onchange="updateResponse(${index}, 'deliveryTime', this.value)"></td>
+            <td><button onclick="saveResponse(${index})">Tallenna vastaus</button></td>
         `;
-        requestsDiv.appendChild(requestDiv);
+        
+        requestsBody.appendChild(row);
     });
 }
 
-// Päivitä pudotusvalikko
-function updateProductSelect() {
-    const productSelect = document.getElementById("productSelect");
-    const requests = JSON.parse(localStorage.getItem("requests")) || [];
-
-    // Tyhjennetään valikko
-    productSelect.innerHTML = "";
-
-    requests.forEach(request => {
-        const option = document.createElement("option");
-        option.value = request.product;
-        option.textContent = request.product;
-        productSelect.appendChild(option);
-    });
+// Päivitä varastovastaukset
+function updateResponse(index, field, value) {
+    let requests = JSON.parse(localStorage.getItem("requests")) || [];
+    requests[index][field] = value;
+    localStorage.setItem("requests", JSON.stringify(requests));
 }
 
-// Näytä varastokäyttäjän vastaukset
-function displayResponses(productRequest) {
-    const responsesDiv = document.getElementById(`responses${productRequest.product}`);
-    responsesDiv.innerHTML = ""; // Tyhjennetään aiemmat vastaukset
-    productRequest.responses.forEach(response => {
-        const responseDiv = document.createElement("div");
-        responseDiv.innerHTML = `
-            <p>Saatavilla: ${response.availability}</p>
-            <p>Hinta: €${response.price}</p>
-            <p>Toimitusaika: ${response.deliveryTime}</p>
-            <hr>
-        `;
-        responsesDiv.appendChild(responseDiv);
-    });
+// Tallenna varastovastaus
+function saveResponse(index) {
+    let requests = JSON.parse(localStorage.getItem("requests")) || [];
+    const request = requests[index];
+
+    if (request.availability && request.price && request.deliveryTime) {
+        alert("Vastaus tallennettu onnistuneesti!");
+    } else {
+        alert("Täytä kaikki kentät ennen tallentamista.");
+    }
+
+    localStorage.setItem("requests", JSON.stringify(requests));
+    displayRequests(); // Päivitä taulukko
 }
 
 window.onload = function() {
     displayRequests();
-    updateProductSelect(); // Varmistetaan, että pudotusvalikko on oikein ladattu
 };
