@@ -1,100 +1,78 @@
-document.getElementById('toiveForm').addEventListener('submit', function(event) {
+document.getElementById("productForm").addEventListener("submit", function(event) {
     event.preventDefault();
-    
-    const tuoteNimi = document.getElementById('tuoteNimi').value;
-    const kuvaus = document.getElementById('kuvaus').value;
-    
-    const toive = {
-        tuoteNimi: tuoteNimi,
-        kuvaus: kuvaus,
-        tila: "Avoin"
+
+    const product = document.getElementById("product").value;
+    const quantity = document.getElementById("quantity").value;
+    const color = document.getElementById("color").value;
+
+    const productRequest = {
+        product,
+        quantity,
+        color
     };
 
-    // Tallenna tuotetoive localStorageen
-    const toiveet = JSON.parse(localStorage.getItem('toiveet')) || [];
-    toiveet.push(toive);
-    localStorage.setItem('toiveet', JSON.stringify(toiveet));
+    let requests = JSON.parse(localStorage.getItem("requests")) || [];
+    requests.push(productRequest);
+    localStorage.setItem("requests", JSON.stringify(requests));
 
-    naytaToiveet();
-    document.getElementById('toiveForm').reset();
+    displayRequests();
+    document.getElementById("productForm").reset();
 });
 
-// Välilehtien käsittely
-function avaaVälilehti(nimi) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    document.getElementById(nimi).style.display = 'block';
-}
+document.getElementById("responseForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-// Näytä tuotetoiveet
-function naytaToiveet() {
-    const list = document.getElementById('toiveList');
-    list.innerHTML = '';
+    const availability = document.getElementById("availability").value;
+    const price = document.getElementById("price").value;
+    const deliveryTime = document.getElementById("deliveryTime").value;
 
-    const toiveet = JSON.parse(localStorage.getItem('toiveet')) || [];
-    toiveet.forEach((toive, index) => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `${toive.tuoteNimi} - ${toive.kuvaus} 
-            <button onclick="tilaaTuote(${index})">Tilaa</button>`;
-        list.appendChild(listItem);
+    const response = {
+        availability,
+        price,
+        deliveryTime
+    };
+
+    let responses = JSON.parse(localStorage.getItem("responses")) || [];
+    responses.push(response);
+    localStorage.setItem("responses", JSON.stringify(responses));
+
+    displayResponses();
+    document.getElementById("responseForm").reset();
+});
+
+function displayRequests() {
+    const requests = JSON.parse(localStorage.getItem("requests")) || [];
+    const requestsDiv = document.getElementById("requests");
+    requestsDiv.innerHTML = "";
+    requests.forEach(request => {
+        const requestDiv = document.createElement("div");
+        requestDiv.innerHTML = `
+            <p>Tuote: ${request.product}</p>
+            <p>Määrä: ${request.quantity}</p>
+            <p>Väri: ${request.color}</p>
+            <hr>
+        `;
+        requestsDiv.appendChild(requestDiv);
     });
 }
 
-// Siirrä tuote "Tilatut tuotteet" -listaan
-function tilaaTuote(index) {
-    const toiveet = JSON.parse(localStorage.getItem('toiveet')) || [];
-    const tilatut = JSON.parse(localStorage.getItem('tilatut')) || [];
-
-    const tuote = toiveet.splice(index, 1)[0]; // Poistetaan toiveista
-    tilatut.push(tuote); // Lisätään tilattuihin
-    localStorage.setItem('toiveet', JSON.stringify(toiveet));
-    localStorage.setItem('tilatut', JSON.stringify(tilatut));
-
-    naytaToiveet();
-    naytaTilatut();
-}
-
-// Näytä tilatut tuotteet
-function naytaTilatut() {
-    const list = document.getElementById('tilatutList');
-    list.innerHTML = '';
-
-    const tilatut = JSON.parse(localStorage.getItem('tilatut')) || [];
-    tilatut.forEach((tuote, index) => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `${tuote.tuoteNimi} - ${tuote.kuvaus} 
-            <button onclick="merkitseSaapuneeksi(${index})">Merkitse saapuneeksi</button>`;
-        list.appendChild(listItem);
+function displayResponses() {
+    const responses = JSON.parse(localStorage.getItem("responses")) || [];
+    const responsesDiv = document.getElementById("requests");
+    responsesDiv.innerHTML = "";
+    responses.forEach(response => {
+        const responseDiv = document.createElement("div");
+        responseDiv.innerHTML = `
+            <p>Saatavilla: ${response.availability}</p>
+            <p>Hinta: €${response.price}</p>
+            <p>Toimitusaika: ${response.deliveryTime}</p>
+            <hr>
+        `;
+        responsesDiv.appendChild(responseDiv);
     });
 }
 
-// Siirrä tuote "Saapuneet tuotteet" -listaan
-function merkitseSaapuneeksi(index) {
-    const tilatut = JSON.parse(localStorage.getItem('tilatut')) || [];
-    const saapuneet = JSON.parse(localStorage.getItem('saapuneet')) || [];
-
-    const tuote = tilatut.splice(index, 1)[0]; // Poistetaan tilatuista
-    saapuneet.push(tuote); // Lisätään saapuneisiin
-    localStorage.setItem('tilatut', JSON.stringify(tilatut));
-    localStorage.setItem('saapuneet', JSON.stringify(saapuneet));
-
-    naytaTilatut();
-    naytaSaapuneet();
-}
-
-// Näytä saapuneet tuotteet
-function naytaSaapuneet() {
-    const list = document.getElementById('saapuneetList');
-    list.innerHTML = '';
-
-    const saapuneet = JSON.parse(localStorage.getItem('saapuneet')) || [];
-    saapuneet.forEach(tuote => {
-        const listItem = document.createElement('li');
-        listItem.innerHTML = `${tuote.tuoteNimi} - ${tuote.kuvaus} (Saapunut)`;
-        list.appendChild(listItem);
-    });
-}
-
-// Lataa tallennetut tiedot sivun avautuessa
-naytaToiveet();
-naytaTilatut();
-naytaSaapuneet();
+window.onload = function() {
+    displayRequests();
+    displayResponses();
+};

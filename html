@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuotetoiveet</title>
+</head>
+<body>
+    <h1>Tuotetoiveet</h1>
+
+    <h2>Tehdäksesi tuotetoiveen, täytä alla oleva lomake</h2>
+
+    <form id="productForm">
+        <label for="product">Tuote:</label>
+        <input type="text" id="product" name="product" required><br>
+
+        <label for="quantity">Määrä:</label>
+        <input type="number" id="quantity" name="quantity" required><br>
+
+        <label for="color">Väri:</label>
+        <input type="text" id="color" name="color"><br>
+
+        <button type="submit">Lähetä Toive</button>
+    </form>
+
+    <h2>Varastokäyttäjän Vastaukset</h2>
+
+    <form id="responseForm">
+        <label for="availability">Saatavilla:</label>
+        <select id="availability" name="availability">
+            <option value="Saatavilla">Saatavilla</option>
+            <option value="Ei saatavilla">Ei saatavilla</option>
+        </select><br>
+
+        <label for="price">Hinta (€):</label>
+        <input type="number" id="price" name="price" required><br>
+
+        <label for="deliveryTime">Toimitusaika:</label>
+        <input type="text" id="deliveryTime" name="deliveryTime"><br>
+
+        <button type="submit">Vastaa</button>
+    </form>
+
+    <h2>Toiveet</h2>
+    <div id="requests"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
