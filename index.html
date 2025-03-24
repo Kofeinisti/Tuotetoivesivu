@@ -22,6 +22,7 @@
         .ordered { color: orange; }
         .available { color: blue; }
         .pending { color: red; }
+        .not-available { color: darkgray; }
         button { padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px; transition: 0.3s; }
         .btn-confirm { background: #28a745; color: white; }
         .btn-confirm:hover { background: #218838; }
@@ -36,7 +37,19 @@
         
         function updateStatus(row, status) {
             row.querySelector('.status').textContent = status;
-            row.querySelector('.status').className = `status ${status.toLowerCase()}`;
+            row.querySelector('.status').className = `status ${status.toLowerCase().replace(' ', '-')}`;
+        }
+        
+        function addNewProduct() {
+            let productName = document.getElementById('newProduct').value;
+            let quantity = document.getElementById('newQuantity').value;
+            let color = document.getElementById('newColor').value;
+            let requestList = document.getElementById('requestList');
+            let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td><button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button></td></tr>`;
+            requestList.innerHTML += newRow;
+            document.getElementById('newProduct').value = '';
+            document.getElementById('newQuantity').value = '';
+            document.getElementById('newColor').value = '';
         }
     </script>
 </head>
@@ -50,10 +63,10 @@
         <div id="storeView" class="content visible">
             <h2>Lisää tuotetoive</h2>
             <form id="requestForm">
-                <label>Tuote: <input type="text" id="product" required></label>
-                <label>Määrä: <input type="number" id="quantity" required></label>
-                <label>Väri: <input type="text" id="color"></label>
-                <button type="submit" class="btn-update">Lisää</button>
+                <label>Tuote: <input type="text" id="newProduct" required></label>
+                <label>Määrä: <input type="number" id="newQuantity" required></label>
+                <label>Väri: <input type="text" id="newColor"></label>
+                <button type="button" class="btn-update" onclick="addNewProduct()">Lisää uusi tuote</button>
             </form>
             
             <h2>Aktiiviset tuotetoiveet</h2>
@@ -63,8 +76,6 @@
                         <th>Tuote</th>
                         <th>Määrä</th>
                         <th>Väri</th>
-                        <th>Hinta</th>
-                        <th>Toimitusaika</th>
                         <th>Tila</th>
                         <th>Toimenpiteet</th>
                     </tr>
@@ -74,8 +85,6 @@
                         <td>Esimerkki-tuote</td>
                         <td>5</td>
                         <td>Sininen</td>
-                        <td>50€</td>
-                        <td>3 päivää</td>
                         <td class="status pending">Odottaa vahvistusta</td>
                         <td>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button>
@@ -111,6 +120,7 @@
                             <button class="btn-update" onclick="updateStatus(this.parentElement.parentElement, 'Available')">Ilmoita saatavuus</button>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Merkitse tilatuksi</button>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Arrived')">Merkitse saapuneeksi</button>
+                            <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Not Available')">Ei saatavilla</button>
                         </td>
                     </tr>
                 </tbody>
