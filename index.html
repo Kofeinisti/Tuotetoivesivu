@@ -23,7 +23,6 @@
         .available { color: blue; }
         .pending { color: red; }
         .not-available { color: darkgray; }
-        button { padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px; transition: 0.3s; }
         .btn-confirm { background: #28a745; color: white; }
         .btn-confirm:hover { background: #218838; }
         .btn-update { background: #007bff; color: white; }
@@ -86,7 +85,7 @@
             
             // Add new row to store view
             let requestList = document.getElementById('requestList');
-            let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td class="price"></td><td class="delivery-time"></td><td><button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button></td></tr>`;
+            let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td class="price"></td><td class="delivery-time"></td><td><button class="btn-confirm" onclick="confirmOrder(this.parentElement.parentElement)">Vahvista tilaus</button></td></tr>`;
             requestList.innerHTML += newRow;
 
             // Add new row to warehouse view
@@ -104,6 +103,23 @@
             document.getElementById('newProduct').value = '';
             document.getElementById('newQuantity').value = '';
             document.getElementById('newColor').value = '';
+        }
+
+        function confirmOrder(storeRow) {
+            const productName = storeRow.querySelector('td').textContent;
+
+            // Update store status
+            storeRow.querySelector('.status').textContent = 'Tilattu';
+            storeRow.querySelector('.status').className = 'status ordered';
+            
+            // Update warehouse status
+            const warehouseRows = document.querySelectorAll('#warehouseList tr');
+            warehouseRows.forEach(warehouseRow => {
+                if (warehouseRow.querySelector('td').textContent === productName) {
+                    warehouseRow.querySelector('.status').textContent = 'Tilattu';
+                    warehouseRow.querySelector('.status').className = 'status ordered';
+                }
+            });
         }
     </script>
 </head>
@@ -130,7 +146,7 @@
                         <th>Tuote</th>
                         <th>Määrä</th>
                         <th>Väri</th>
-                        <th>Tila</th>
+                        <th>Status</th>
                         <th>Hinta</th>
                         <th>Toimitusaika</th>
                         <th>Toimenpiteet</th>
@@ -141,17 +157,15 @@
                         <td>Esimerkki-tuote</td>
                         <td>5</td>
                         <td>Sininen</td>
-                        <td class="status pending">Odottaa vahvistusta</td>
+                        <td class="status ordered">Odottaa varaston vastausta</td>
                         <td class="price"></td>
                         <td class="delivery-time"></td>
-                        <td>
-                            <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button>
-                        </td>
+                        <td><button class="btn-confirm" onclick="confirmOrder(this.parentElement.parentElement)">Vahvista tilaus</button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
+
         <div id="warehouseView" class="content">
             <h2>Saapuneet tuotepyynnöt</h2>
             <table>
