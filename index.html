@@ -36,8 +36,21 @@
         }
         
         function updateStatus(row, status) {
+            // Update warehouse row
             row.querySelector('.status').textContent = status;
             row.querySelector('.status').className = `status ${status.toLowerCase().replace(' ', '-')}`;
+            
+            // Get product name from warehouse row
+            const productName = row.querySelector('td').textContent;
+
+            // Update the status in store view
+            const storeRows = document.querySelectorAll('#requestList tr');
+            storeRows.forEach(storeRow => {
+                if (storeRow.querySelector('td').textContent === productName) {
+                    storeRow.querySelector('.status').textContent = status;
+                    storeRow.querySelector('.status').className = `status ${status.toLowerCase().replace(' ', '-')}`;
+                }
+            });
         }
         
         function addNewProduct() {
