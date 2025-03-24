@@ -44,9 +44,23 @@
             let productName = document.getElementById('newProduct').value;
             let quantity = document.getElementById('newQuantity').value;
             let color = document.getElementById('newColor').value;
+            
+            // Add new row to store view
             let requestList = document.getElementById('requestList');
             let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td><button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button></td></tr>`;
             requestList.innerHTML += newRow;
+
+            // Add new row to warehouse view
+            let warehouseList = document.getElementById('warehouseList');
+            let warehouseRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td><input type="text" placeholder="Anna hinta"></td><td><input type="text" placeholder="Anna toimitusaika"></td><td class="status pending">Odottaa tarkistusta</td><td>
+                                <button class="btn-update" onclick="updateStatus(this.parentElement.parentElement, 'Available')">Ilmoita saatavuus</button>
+                                <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Merkitse tilatuksi</button>
+                                <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Arrived')">Merkitse saapuneeksi</button>
+                                <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Not Available')">Ei saatavilla</button>
+                                </td></tr>`;
+            warehouseList.innerHTML += warehouseRow;
+
+            // Clear input fields
             document.getElementById('newProduct').value = '';
             document.getElementById('newQuantity').value = '';
             document.getElementById('newColor').value = '';
