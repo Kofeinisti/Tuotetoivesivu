@@ -3,46 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tuotetoiveet ja Varaston Vastaus</title>
+    <title>Tuotetoiveiden hallinta</title>
     <style>
-        table, th, td {
-            border: 1px solid black;
-            padding: 8px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f8f9fa; }
+        h2 { border-bottom: 3px solid #007bff; padding-bottom: 5px; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .tabs { display: flex; justify-content: space-around; margin-bottom: 15px; }
+        .tab { padding: 12px 20px; cursor: pointer; border: none; background: #007bff; color: white; border-radius: 5px; transition: 0.3s; }
+        .tab:hover { background: #0056b3; }
+        .active { background: #0056b3; }
+        .content { display: none; }
+        .visible { display: block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #007bff; color: white; }
+        .status { font-weight: bold; }
+        .arrived { color: green; }
+        .ordered { color: orange; }
+        .available { color: blue; }
+        .pending { color: red; }
+        button { padding: 8px 12px; border: none; cursor: pointer; border-radius: 5px; transition: 0.3s; }
+        .btn-confirm { background: #28a745; color: white; }
+        .btn-confirm:hover { background: #218838; }
+        .btn-update { background: #007bff; color: white; }
+        .btn-update:hover { background: #0056b3; }
     </style>
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('visible'));
+            document.getElementById(tabId).classList.add('visible');
+        }
+        
+        function updateStatus(row, status) {
+            row.querySelector('.status').textContent = status;
+            row.querySelector('.status').className = `status ${status.toLowerCase()}`;
+        }
+    </script>
 </head>
 <body>
-    <h1>Tuotetoiveet ja Varaston Vastaus</h1>
-
-    <h2>Toivomuslomake</h2>
-    <form id="productForm">
-        <label for="product">Tuote:</label>
-        <input type="text" id="product" name="product" required><br>
-
-        <label for="quantity">Määrä:</label>
-        <input type="number" id="quantity" name="quantity" required><br>
-
-        <label for="color">Väri:</label>
-        <input type="text" id="color" name="color"><br>
-
-        <button type="submit">Lähetä Toive</button>
-    </form>
-
-    <h2>Toiveet ja Varaston Vastaus</h2>
-    <table id="requestsTable">
-        <thead>
-            <tr>
-                <th>Tuote</th>
-                <th>Määrä</th>
-                <th>Väri</th>
-                <th>Varaston Status</th>
-                <th>Viestit</th>
-                <th>Vastaa</th>
-            </tr>
-        </thead>
-        <tbody id="requestsBody"></tbody>
-    </table>
-
-    <script src="javascript"></script>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('storeView')">Myymälä</button>
+            <button class="tab" onclick="showTab('warehouseView')">Varasto</button>
+        </div>
+        
+        <div id="storeView" class="content visible">
+            <h2>Lisää tuotetoive</h2>
+            <form id="requestForm">
+                <label>Tuote: <input type="text" id="product" required></label>
+                <label>Määrä: <input type="number" id="quantity" required></label>
+                <label>Väri: <input type="text" id="color"></label>
+                <button type="submit" class="btn-update">Lisää</button>
+            </form>
+            
+            <h2>Aktiiviset tuotetoiveet</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tuote</th>
+                        <th>Määrä</th>
+                        <th>Väri</th>
+                        <th>Hinta</th>
+                        <th>Toimitusaika</th>
+                        <th>Tila</th>
+                        <th>Toimenpiteet</th>
+                    </tr>
+                </thead>
+                <tbody id="requestList">
+                    <tr>
+                        <td>Esimerkki-tuote</td>
+                        <td>5</td>
+                        <td>Sininen</td>
+                        <td>50€</td>
+                        <td>3 päivää</td>
+                        <td class="status pending">Odottaa vahvistusta</td>
+                        <td>
+                            <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="warehouseView" class="content">
+            <h2>Saapuneet tuotepyynnöt</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tuote</th>
+                        <th>Määrä</th>
+                        <th>Väri</th>
+                        <th>Hinta</th>
+                        <th>Toimitusaika</th>
+                        <th>Tila</th>
+                        <th>Päivitä</th>
+                    </tr>
+                </thead>
+                <tbody id="warehouseList">
+                    <tr>
+                        <td>Esimerkki-tuote</td>
+                        <td>5</td>
+                        <td>Sininen</td>
+                        <td><input type="text" placeholder="Anna hinta"></td>
+                        <td><input type="text" placeholder="Anna toimitusaika"></td>
+                        <td class="status pending">Odottaa tarkistusta</td>
+                        <td>
+                            <button class="btn-update" onclick="updateStatus(this.parentElement.parentElement, 'Available')">Ilmoita saatavuus</button>
+                            <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Merkitse tilatuksi</button>
+                            <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Arrived')">Merkitse saapuneeksi</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
