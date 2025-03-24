@@ -52,7 +52,33 @@
                 }
             });
         }
-        
+
+        function updatePriceAndDeliveryTime(warehouseRow) {
+            const productName = warehouseRow.querySelector('td').textContent;
+            const price = warehouseRow.querySelector('input[placeholder="Anna hinta"]').value;
+            const deliveryTime = warehouseRow.querySelector('input[placeholder="Anna toimitusaika"]').value;
+
+            // Update store view with price and delivery time
+            const storeRows = document.querySelectorAll('#requestList tr');
+            storeRows.forEach(storeRow => {
+                if (storeRow.querySelector('td').textContent === productName) {
+                    let priceCell = storeRow.querySelector('.price');
+                    let deliveryTimeCell = storeRow.querySelector('.delivery-time');
+                    
+                    // If price or delivery time cells don't exist, create them
+                    if (!priceCell) {
+                        priceCell = storeRow.insertCell(4);
+                    }
+                    if (!deliveryTimeCell) {
+                        deliveryTimeCell = storeRow.insertCell(5);
+                    }
+
+                    priceCell.textContent = price;
+                    deliveryTimeCell.textContent = deliveryTime;
+                }
+            });
+        }
+
         function addNewProduct() {
             let productName = document.getElementById('newProduct').value;
             let quantity = document.getElementById('newQuantity').value;
@@ -60,7 +86,7 @@
             
             // Add new row to store view
             let requestList = document.getElementById('requestList');
-            let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td><button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button></td></tr>`;
+            let newRow = `<tr><td>${productName}</td><td>${quantity}</td><td>${color}</td><td class="status pending">Odottaa vahvistusta</td><td class="price"></td><td class="delivery-time"></td><td><button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button></td></tr>`;
             requestList.innerHTML += newRow;
 
             // Add new row to warehouse view
@@ -70,6 +96,7 @@
                                 <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Merkitse tilatuksi</button>
                                 <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Arrived')">Merkitse saapuneeksi</button>
                                 <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Not Available')">Ei saatavilla</button>
+                                <button class="btn-confirm" onclick="updatePriceAndDeliveryTime(this.parentElement.parentElement)">Päivitä hinta ja toimitusaika</button>
                                 </td></tr>`;
             warehouseList.innerHTML += warehouseRow;
 
@@ -104,6 +131,8 @@
                         <th>Määrä</th>
                         <th>Väri</th>
                         <th>Tila</th>
+                        <th>Hinta</th>
+                        <th>Toimitusaika</th>
                         <th>Toimenpiteet</th>
                     </tr>
                 </thead>
@@ -113,6 +142,8 @@
                         <td>5</td>
                         <td>Sininen</td>
                         <td class="status pending">Odottaa vahvistusta</td>
+                        <td class="price"></td>
+                        <td class="delivery-time"></td>
                         <td>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Vahvista tilaus</button>
                         </td>
@@ -132,7 +163,7 @@
                         <th>Hinta</th>
                         <th>Toimitusaika</th>
                         <th>Tila</th>
-                        <th>Päivitä</th>
+                        <th>Toimenpiteet</th>
                     </tr>
                 </thead>
                 <tbody id="warehouseList">
@@ -148,6 +179,7 @@
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Ordered')">Merkitse tilatuksi</button>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Arrived')">Merkitse saapuneeksi</button>
                             <button class="btn-confirm" onclick="updateStatus(this.parentElement.parentElement, 'Not Available')">Ei saatavilla</button>
+                            <button class="btn-confirm" onclick="updatePriceAndDeliveryTime(this.parentElement.parentElement)">Päivitä hinta ja toimitusaika</button>
                         </td>
                     </tr>
                 </tbody>
